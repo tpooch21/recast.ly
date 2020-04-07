@@ -1,7 +1,8 @@
 import exampleVideoData from '../data/exampleVideoData.js';
+import searchYouTube from '../lib/searchYouTube.js';
 import VideoList from './VideoList.js';
 import VideoPlayer from './VideoPlayer.js';
-
+import YOUTUBE_API_KEY from '../config/youtube.js';
 
 //convert app to class component with a constructor and super
 //set initial state = video object
@@ -10,11 +11,30 @@ import VideoPlayer from './VideoPlayer.js';
 // VideoList state={this.state} event=onClick
 // VideoListEntry onClick={props.event}
 
+// Initial state should be empty object
+// Add searchYouTube to body of App
+//   Pass in our object and success CB to searchYoutube
+//   Create options property in App state equal to search object
+//   Success CB will add results.items to this.props
+//   setState to this.props[0]
+//   setState source to this.props
+//
+// componentDidMount() method will call searchYoutube
+//   Input will be this.state.options
+//   And successCB
+
+
 class App extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      playing: exampleVideoData[3]
+      source: exampleVideoData,
+      playing: null,
+      options: {
+        query: 'tigers',
+        max: 5,
+        key: YOUTUBE_API_KEY
+      }
     };
     this.onClick = this.onClick.bind(this);
   }
@@ -36,14 +56,25 @@ class App extends React.Component {
         </nav>
         <div className="row">
           <div className="col-md-7">
-            <VideoPlayer video={this.state.playing} />
+            <VideoPlayer video={this.state.playing || this.state.source[0]} />
           </div>
           <div className="col-md-5">
-            <VideoList videos={exampleVideoData} event={this.onClick} state={this.state}/>
+            <VideoList videos={this.state.source} event={this.onClick} state={this.state}/>
           </div>
         </div>
       </div>
     );
+  }
+
+  componentDidMount() {
+
+    // Call GET request function and update state of App with results
+    searchYouTube(this.state.options, (data) => {
+      this.setState({
+        source: data.items,
+        playing: this.state.playing || data.items[0],
+      });
+    });
   }
 
 }
