@@ -13,18 +13,27 @@
 // title = props.video.title
 // description = props.video.description
 
+// Might be able to pass props.video as an argument
 
-var VideoListEntry = (props) => (
-  <div className="video-list-entry media">
-    <div className="media-left media-middle">
-      <img className="media-object" src={props.video.snippet.thumbnails.default.url} alt="" />
+var VideoListEntry = (props) => {
+
+  var clickEvent = (event) => {
+    props.onClick(props.video);
+  };
+
+  return (
+    <div className="video-list-entry media">
+      <div className="media-left media-middle">
+        <img className="media-object" src={props.video.snippet.thumbnails.default.url} alt="" />
+      </div>
+      <div className="media-body">
+        <div className="video-list-entry-title" onClick={clickEvent}>{props.video.snippet.title}</div>
+        <div className="video-list-entry-detail">{props.video.snippet.description}</div>
+      </div>
     </div>
-    <div className="media-body">
-      <div className="video-list-entry-title">{props.video.snippet.title}</div>
-      <div className="video-list-entry-detail">{props.video.snippet.description}</div>
-    </div>
-  </div>
-);
+  );
+
+};
 
 
 // PropTypes tell other developers what `props` a component expects

@@ -12,10 +12,11 @@
 // VideoList --> props.videos = [{snippet: {}}, {snippet: {}}];
 import VideoListEntry from './VideoListEntry.js';
 
+// Pass onClick handler from App to each VideoListEntry
 var VideoList = (props) => (
   <div className="video-list">
     {props.videos.map(video =>
-      <VideoListEntry video={video}/>
+      <VideoListEntry video={video} onClick={props.event} state={props.state}/>
     )}
   </div>
 );
