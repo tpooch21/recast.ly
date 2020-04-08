@@ -4,8 +4,9 @@ import VideoList from './components/VideoList.js';
 import VideoListEntry from './components/VideoList.js';
 import VideoPlayer from './components/VideoPlayer.js';
 import exampleVideoData from './data/exampleVideoData.js';
+import searchYouTube from './lib/searchYouTube.js';
 
 ReactDOM.render(
-  <App />,
+  <App searchYouTube={searchYouTube}/>,
   document.getElementById('app')
 );

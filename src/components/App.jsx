@@ -3,6 +3,7 @@ import searchYouTube from '../lib/searchYouTube.js';
 import VideoList from './VideoList.js';
 import VideoPlayer from './VideoPlayer.js';
 import YOUTUBE_API_KEY from '../config/youtube.js';
+import Search from './Search.js';
 
 //convert app to class component with a constructor and super
 //set initial state = video object
@@ -30,13 +31,53 @@ class App extends React.Component {
     this.state = {
       source: exampleVideoData,
       playing: null,
-      options: {
-        query: 'tigers',
-        max: 5,
-        key: YOUTUBE_API_KEY
-      }
     };
+
+    this.options = {
+      query: 'tigers',
+      max: 5,
+      key: YOUTUBE_API_KEY
+    };
+
     this.onClick = this.onClick.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+  }
+
+  // Makes request to API and updates VideoList and VideoPlayer on keyboard entries
+  onKeyPress(keyword) {
+
+    this.options.query = keyword;
+
+    // var debouncer = _.debounce(function() {
+    //     searchYouTube(this.options, (data) => {
+    //       this.setState({
+    //         source: data.items,
+    //         playing: data.items[0],
+    //       });
+    //     });
+    // }, 750);
+
+    // debouncer();
+    searchYouTube(this.options, (data) => {
+      this.setState({
+        source: data.items,
+        playing: data.items[0],
+      });
+    });
+  }
+
+  // Makes request to API and updates VideoList and VideoPlayer when search button is clicked
+  onSubmit(keyword) {
+
+    this.options.query = keyword;
+
+    searchYouTube(this.options, (data) => {
+      this.setState({
+        source: data.items,
+        playing: data.items[0],
+      });
+    });
   }
 
   onClick(video) {
@@ -51,7 +92,7 @@ class App extends React.Component {
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <div><h5><em>search</em> view goes here</h5></div>
+            <Search onSubmit={this.onSubmit} keyUp={this.onKeyPress} />
           </div>
         </nav>
         <div className="row">
@@ -69,7 +110,7 @@ class App extends React.Component {
   componentDidMount() {
 
     // Call GET request function and update state of App with results
-    searchYouTube(this.state.options, (data) => {
+    searchYouTube(this.options, (data) => {
       this.setState({
         source: data.items,
         playing: this.state.playing || data.items[0],
