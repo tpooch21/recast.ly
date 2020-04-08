@@ -39,48 +39,30 @@ class App extends React.Component {
       key: YOUTUBE_API_KEY
     };
 
-    this.onClick = this.onClick.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onKeyPress = this.onKeyPress.bind(this);
+    this.onVideoEntryTitleClick = this.onVideoEntryTitleClick.bind(this);
+    this.getYouTubeSearchResults = this.getYouTubeSearchResults.bind(this);
   }
 
-  // Makes request to API and updates VideoList and VideoPlayer on keyboard entries
-  onKeyPress(keyword) {
+  // Calls getYouTubeSearchResults as soon as App is rendered
+  componentDidMount() {
+    this.getYouTubeSearchResults('tigers');
+  }
 
-    this.options.query = keyword;
+  // wrapper function for call to YouTube API, which resets the source
+  getYouTubeSearchResults(query) {
+    this.options.query = query;
 
-    // var debouncer = _.debounce(function() {
-    //     searchYouTube(this.options, (data) => {
-    //       this.setState({
-    //         source: data.items,
-    //         playing: data.items[0],
-    //       });
-    //     });
-    // }, 750);
-
-    // debouncer();
-    searchYouTube(this.options, (data) => {
+    this.props.searchYouTube(this.options, (data) => {
       this.setState({
         source: data.items,
-        playing: data.items[0],
+        playing: data.items[0]
       });
     });
+
   }
 
-  // Makes request to API and updates VideoList and VideoPlayer when search button is clicked
-  onSubmit(keyword) {
-
-    this.options.query = keyword;
-
-    searchYouTube(this.options, (data) => {
-      this.setState({
-        source: data.items,
-        playing: data.items[0],
-      });
-    });
-  }
-
-  onClick(video) {
+  // Triggers state change of currently playing video to VideoListEntry that is clicked
+  onVideoEntryTitleClick(video) {
     this.setState({
       playing: video
     });
@@ -92,7 +74,7 @@ class App extends React.Component {
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <Search onSubmit={this.onSubmit} keyUp={this.onKeyPress} />
+            <Search onSearch={this.getYouTubeSearchResults} />
           </div>
         </nav>
         <div className="row">
@@ -100,22 +82,11 @@ class App extends React.Component {
             <VideoPlayer video={this.state.playing || this.state.source[0]} />
           </div>
           <div className="col-md-5">
-            <VideoList videos={this.state.source} event={this.onClick} state={this.state}/>
+            <VideoList videos={this.state.source} event={this.onVideoEntryTitleClick} state={this.state}/>
           </div>
         </div>
       </div>
     );
-  }
-
-  componentDidMount() {
-
-    // Call GET request function and update state of App with results
-    searchYouTube(this.options, (data) => {
-      this.setState({
-        source: data.items,
-        playing: this.state.playing || data.items[0],
-      });
-    });
   }
 
 }

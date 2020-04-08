@@ -1,19 +1,12 @@
 
 
 var Search = (props) => {
-  var submitForm = (event) => {
-    props.onSubmit(event.target.previousElementSibling.value);
-  };
 
-  var keyPress = (event) => {
-    debugger;
-    props.keyUp(event.target.value);
-  };
-
+  // Input and button elements make calls to searchYouTube API via respective event handlers
   return (
     <div className="search-bar form-inline">
-      <input className="form-control" type="text" onKeyPress={keyPress} />
-      <button className="btn hidden-sm-down" onClick={submitForm}>
+      <input className="form-control" type="text" onKeyPress={() => {props.onSearch(event.target.value)}} />
+      <button className="btn hidden-sm-down" onClick={() => {props.onSearch(event.target.previousElementSibling.value)}}>
         <span className="glyphicon glyphicon-search"></span>
       </button>
     </div>

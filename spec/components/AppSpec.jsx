@@ -52,6 +52,7 @@ describe('App', function() {
     var searchYouTubeStub;
 
     beforeEach(function() {
+      debugger;
       searchYouTubeStub = sinon.stub();
       searchYouTubeStub.yields(window.fakeVideoData);
       app = renderIntoDocument(
